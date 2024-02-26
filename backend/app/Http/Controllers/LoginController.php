@@ -48,9 +48,15 @@ class LoginController extends Controller
         // is the code provided the same one saved?
 
         //if so, return back an auth token
-
-        
+        if ($user) {
+            $user->update([
+                'login_code' => null
+            ]);
+            
+            return $user->createToken($request->login_code)->plainTextToken;
+        }
 
         // if not, return back a message
+        return response()->json(['message' => 'Invalid verification code'], 401);
     }
 }
